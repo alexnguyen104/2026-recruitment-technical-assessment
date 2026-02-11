@@ -22,9 +22,11 @@ You should complete either the [backend](./backend/README.md) **OR** [frontend](
 If you are applying for **Chaos**, you should complete either the [chaos](./chaos/README.md) **AND** [backend](./backend/README.md) tasks for backend, **OR** the [frontend](./frontend/README.md) task.
 
 ### Freerooms
-If you are applying for **Freerooms**, you may optionally choose to complete the [freerooms](./freerooms/README.md) task in addition to the [frontend](./frontend/README.md) or [backend](./backend/README.md) tasks.
+If you are applying for **Freerooms**, you have the following options:
+- "Freerooms Web" applicants: Complete either the [backend](./backend/README.md) **OR** [frontend](./frontend/README.md) task
+- "Freerooms Mobile" applicants: Complete the [mobile ("freerooms")](./freerooms/README.md)
 
-If you aren't applying for any other projects, and you are specifically interested in mobile development with Freerooms, we recommend completing the [freerooms](./freerooms/README.md) assessment. In this case you do not need to complete any other assessment.
+If you aren't applying for any other projects, and you are specifically interested in mobile development with Freerooms, we recommend completing the [mobile ("freerooms")](./freerooms/README.md) assessment. In this case you do not need to complete any other assessment.
 
 ### Warchest
 If you are applying for **Warchest**:
