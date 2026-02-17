@@ -1,2 +1,3 @@
 py_template/venv
 autotester/node_modules
+autotester/src/my_test.spec.ts

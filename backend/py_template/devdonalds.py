@@ -70,6 +70,7 @@ def parse_handwriting(recipeName: str) -> Union[str , None]:
 @app.route('/entry', methods=['POST'])
 def create_entry():
 	data = request.get_json()
+	data["name"] = parse_handwriting(data["name"])
 
 	global cookbook
 	if not is_unique(data, cookbook):
@@ -117,17 +118,13 @@ def is_ingredient_valid(data):
 	
 	return True
 
-@app.route('/gcookbook', methods=["GET"])
-def gcookbook():
-	global cookbook
-	return jsonify(cookbook)
-
 # [TASK 3] ====================================================================
 # Endpoint that returns a summary of a recipe that corresponds to a query name
 @app.route('/summary', methods=['GET'])
 def summary():
 	global cookbook
 	name = request.args.get("name")
+	name = parse_handwriting(name)
 
 	# Check if the recipe's name exists and the recipe's items exist in the cookbook
 	if not recipe_name_exists(name, cookbook) or not items_exist(name,cookbook):
@@ -168,7 +165,7 @@ def items_exist(name, cookbook):
 			
 	return False
 
-def get_base_ingredient_raw(name, cookbook):
+def get_base_ingredient_raw(name, parent_quantity, cookbook):
 	ingredient_list_raw = []
 	index = get_cookbook_index_by_name(name, cookbook)
 
@@ -178,28 +175,34 @@ def get_base_ingredient_raw(name, cookbook):
 		if cookbook[item_index]["type"] == "ingredient":
 			ingredient = {
 				"name": item["name"],
-				"quantity": item["quantity"],
+				"quantity": item["quantity"] * parent_quantity,
 				"cookTime": cookbook[item_index]["cookTime"]
 			}
 			ingredient_list_raw.append(ingredient)
 		else:
-			ingredient_list_raw.extend(get_base_ingredient_raw(item["name"], cookbook))
+			ingredient_list_raw.extend(get_base_ingredient_raw(item["name"], item["quantity"], cookbook))
 
 	return ingredient_list_raw
 			
 def get_base_ingredient(name, cookbook):
-	raw_list = get_base_ingredient_raw(name, cookbook)
+	raw_list = get_base_ingredient_raw(name, 1, cookbook)
 	edited_list = []
+	index_of_added_ingredient = []
 	cook_time = get_cook_time(raw_list)
 
 	for i in range(len(raw_list)):
 		quantity = raw_list[i]["quantity"]
+		
+		# Check if the ingredient is already added to the edited_list
+		if i in index_of_added_ingredient:
+			continue
 
-		# Update the quantity for the duplicated ingredients and remove them from the raw list
+		# Update the quantity for the duplicated ingredients
+		index_of_added_ingredient.append(i)
 		for j in range(len(raw_list)):
 			if raw_list[i]["name"] == raw_list[j]["name"] and i != j:
 				quantity += raw_list[j]["quantity"]
-				raw_list.pop(j)
+				index_of_added_ingredient.append(j)
 
 		ingredient = {
 			"name": raw_list[i]["name"],
@@ -213,8 +216,8 @@ def get_base_ingredient(name, cookbook):
 def get_cook_time(raw_list):
 	cook_time = 0
 	for i in range(len(raw_list)):
-		cook_time += raw_list[i]["cookTime"]
-
+		cook_time += raw_list[i]["cookTime"] * raw_list[i]["quantity"]
+	print(raw_list)
 	return cook_time
 	
 # =============================================================================
