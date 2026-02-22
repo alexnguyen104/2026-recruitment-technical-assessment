@@ -217,7 +217,7 @@ def get_cook_time(raw_list):
 	cook_time = 0
 	for i in range(len(raw_list)):
 		cook_time += raw_list[i]["cookTime"] * raw_list[i]["quantity"]
-	print(raw_list)
+		
 	return cook_time
 	
 # =============================================================================
